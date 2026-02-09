@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DreamCatcher Agency - Make Something Out of Nothing">
+<title>DreamCatcher Agency | Make Something Out of Nothing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #0a0a0a; color: #e0e0e0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+:root { --black: #0a0a0a; --dark: #111111; --dark-gray: #1a1a1a; --mid-gray: #2a2a2a; --light-gray: #888; --white: #f0f0f0; --accent: #d4a853; --accent-glow: rgba(212,168,83,0.15); --section-padding: clamp(80px, 10vw, 140px); }
+body::after { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; }
+
+.nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 0 40px; height: 72px; display: flex; align-items: center; justify-content: space-between; transition: background 0.4s, backdrop-filter 0.4s; }
+.nav.scrolled { background: rgba(10,10,10,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(212,168,83,0.1); }
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 3px; color: var(--white); }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--light-gray); transition: color 0.3s; position: relative; }
+.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { width: 100%; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+.nav-toggle span { width: 24px; height: 2px; background: var(--white); transition: 0.3s; }
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.hero { position: relative; height: 100vh; min-height: 600px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; }
+.hero-bg::before { content: ''; position: absolute; inset: -50%; background: radial-gradient(ellipse 600px 600px at 20% 50%, rgba(212,168,83,0.15), transparent), radial-gradient(ellipse 800px 800px at 80% 20%, rgba(100,60,20,0.12), transparent), radial-gradient(ellipse 500px 500px at 60% 80%, rgba(212,168,83,0.08), transparent); animation: heroShift 12s ease-in-out infinite alternate; }
+.hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.95) 100%); }
+@keyframes heroShift { 0% { transform: translate(0, 0) scale(1); } 33% { transform: translate(-5%, 3%) scale(1.05); } 66% { transform: translate(3%, -2%) scale(1.02); } 100% { transform: translate(-2%, -3%) scale(1.08); } }
+.particles { position: absolute; inset: 0; z-index: 1; }
+.particle { position: absolute; width: 2px; height: 2px; background: var(--accent); border-radius: 50%; opacity: 0; animation: particleFloat linear infinite; }
+@keyframes particleFloat { 0% { opacity: 0; transform: translateY(100vh) scale(0); } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { opacity: 0; transform: translateY(-20vh) scale(1); } }
+.hero-scanline { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+.hero-scanline::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(212,168,83,0.03), transparent); animation: scanMove 8s linear infinite; transform: skewX(-15deg); }
+@keyframes scanMove { 0% { left: -50%; } 100% { left: 150%; } }
+.hero-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; }
+.hero-pre { font-family: 'Oswald', sans-serif; font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-weight: 300; letter-spacing: 8px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; opacity: 0; animation: fadeUp 1s 0.3s forwards; }
+.hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 9vw, 8rem); line-height: 0.95; letter-spacing: 6px; color: var(--white); margin-bottom: 20px; opacity: 0; animation: fadeUp 1s 0.6s forwards; }
+.hero-title em { font-style: normal; color: var(--accent); }
+.hero-slogan { font-family: 'Oswald', sans-serif; font-size: clamp(1rem, 2vw, 1.5rem); font-weight: 300; letter-spacing: 6px; text-transform: uppercase; color: var(--light-gray); margin-bottom: 48px; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
+.hero-divider { width: 60px; height: 1px; background: var(--accent); margin: 0 auto 32px; opacity: 0; animation: fadeUp 1s 1.1s forwards; }
+.hero-scroll { opacity: 0; animation: fadeUp 1s 1.4s forwards; }
+.hero-scroll a { display: inline-flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--light-gray); transition: color 0.3s; }
+.hero-scroll a:hover { color: var(--accent); }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%, 100% { opacity: 0.3; transform: scaleY(0.6); } 50% { opacity: 1; transform: scaleY(1); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+section { padding: var(--section-padding) 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.section-label { font-family: 'Oswald', sans-serif; font-size: 0.7rem; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; color: var(--white); margin-bottom: 48px; line-height: 1.1; }
+.section-divider { width: 40px; height: 1px; background: var(--accent); margin-bottom: 32px; }
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s, transform 0.8s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+#about { background: var(--dark); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.about-text p { font-size: 1rem; line-height: 2; color: #bbb; font-weight: 300; margin-bottom: 24px; }
+.about-text p strong { color: var(--white); font-weight: 500; }
+.about-ai-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 20px; border: 1px solid rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; }
+.pulse-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; }
+.stat-item { padding: 28px; border: 1px solid var(--mid-gray); transition: border-color 0.3s, transform 0.3s; }
+.stat-item:hover { border-color: var(--accent); transform: translateY(-4px); }
+.stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--light-gray); }
+
+#ceo { background: var(--black); position: relative; }
+#ceo::before { content: '\201C'; position: absolute; top: 60px; left: 40px; font-family: 'Bebas Neue', sans-serif; font-size: 20rem; color: rgba(212,168,83,0.04); line-height: 1; pointer-events: none; }
+.ceo-content { max-width: 800px; }
+.ceo-message { font-size: clamp(1rem, 1.5vw, 1.15rem); line-height: 2.2; color: #bbb; font-weight: 300; margin-bottom: 40px; }
+.ceo-message em { font-style: normal; color: var(--accent); font-weight: 500; }
+.ceo-sign { display: flex; align-items: center; gap: 20px; }
+.ceo-sign-line { width: 40px; height: 1px; background: var(--accent); }
+.ceo-name { font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 3px; color: var(--white); }
+.ceo-role { font-size: 0.75rem; color: var(--light-gray); letter-spacing: 2px; margin-top: 4px; }
+
+#services { background: var(--dark); }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.service-card { padding: 48px 24px; border: 1px solid var(--mid-gray); margin-left: -1px; margin-top: -1px; text-align: center; transition: background 0.4s, border-color 0.4s; position: relative; overflow: hidden; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
+.service-card:hover { background: rgba(212,168,83,0.05); border-color: var(--accent); z-index: 1; }
+.service-card:hover::before { transform: scaleX(1); }
+.service-card.featured { background: rgba(212,168,83,0.04); border-color: rgba(212,168,83,0.2); }
+.service-card.featured::after { content: 'NEW'; position: absolute; top: 12px; right: 12px; font-family: 'Oswald', sans-serif; font-size: 0.55rem; letter-spacing: 2px; color: var(--black); background: var(--accent); padding: 2px 8px; }
+.service-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
+.service-name-en { font-family: 'Oswald', sans-serif; font-size: 0.95rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+.service-name-kr { font-size: 0.75rem; color: var(--light-gray); }
+.service-detail { font-size: 0.7rem; color: #666; margin-top: 12px; line-height: 1.6; }
+
+#portfolio { background: var(--black); }
+.portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.portfolio-item { position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--dark-gray); cursor: pointer; }
+.portfolio-item.featured-project { grid-column: span 2; }
+.portfolio-item-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.6s, filter 0.6s; filter: brightness(0.5) saturate(0.7); }
+.portfolio-item:hover .portfolio-item-bg { transform: scale(1.08); filter: brightness(0.7) saturate(1); }
+.portfolio-item-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.2) 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: 28px; transition: background 0.4s; }
+.portfolio-item:hover .portfolio-item-overlay { background: linear-gradient(to top, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.4) 60%); }
+.portfolio-category { font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.portfolio-name { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 500; letter-spacing: 1px; color: var(--white); margin-bottom: 6px; }
+.portfolio-item.featured-project .portfolio-name { font-size: 1.4rem; }
+.portfolio-desc { font-size: 0.75rem; color: var(--light-gray); line-height: 1.6; opacity: 0; transform: translateY(10px); transition: 0.4s; }
+.portfolio-item:hover .portfolio-desc { opacity: 1; transform: translateY(0); }
+.portfolio-badge { display: inline-block; font-family: 'Oswald', sans-serif; font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; background: var(--accent); color: var(--black); padding: 3px 10px; margin-bottom: 10px; width: fit-content; }
+
+#clients { background: var(--dark); }
+.clients-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.client-item { display: flex; align-items: center; justify-content: center; padding: 40px 20px; border: 1px solid var(--mid-gray); margin-left: -1px; margin-top: -1px; transition: border-color 0.3s, background 0.3s; }
+.client-item:hover { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.03); }
+.client-name { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--light-gray); transition: color 0.3s; text-align: center; }
+.client-item:hover .client-name { color: var(--white); }
+
+#history { background: var(--black); }
+.timeline { position: relative; padding-left: 60px; }
+.timeline::before { content: ''; position: absolute; left: 20px; top: 0; width: 1px; height: 100%; background: linear-gradient(to bottom, var(--accent), var(--mid-gray)); }
+.timeline-item { position: relative; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.timeline-item:last-child { margin-bottom: 0; border-bottom: none; }
+.timeline-dot { position: absolute; left: -46px; top: 4px; width: 10px; height: 10px; border: 2px solid var(--accent); border-radius: 50%; background: var(--black); transition: background 0.3s; }
+.timeline-item:hover .timeline-dot { background: var(--accent); }
+.timeline-item.highlight .timeline-dot { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+.timeline-date { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 8px; }
+.timeline-event { font-size: 0.95rem; color: #bbb; font-weight: 300; line-height: 1.6; }
+
+#contact { background: var(--dark); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+.contact-info-list { list-style: none; display: flex; flex-direction: column; gap: 28px; }
+.contact-info-item { display: flex; gap: 20px; align-items: flex-start; }
+.contact-icon { width: 20px; flex-shrink: 0; text-align: center; color: var(--accent); font-size: 0.9rem; margin-top: 2px; }
+.contact-label { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--light-gray); margin-bottom: 4px; }
+.contact-value { font-size: 0.95rem; color: var(--white); font-weight: 300; line-height: 1.6; }
+.contact-value a { transition: color 0.3s; }
+.contact-value a:hover { color: var(--accent); }
+.map-container { background: var(--mid-gray); border-radius: 4px; overflow: hidden; min-height: 360px; }
+.map-container iframe { width: 100%; height: 100%; min-height: 360px; border: none; filter: grayscale(0.8) brightness(0.7) contrast(1.2); transition: filter 0.4s; }
+.map-container:hover iframe { filter: grayscale(0.3) brightness(0.85) contrast(1.1); }
+
+.footer { background: var(--black); padding: 40px 0; border-top: 1px solid var(--mid-gray); }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--light-gray); }
+.footer-logo span { color: var(--accent); }
+.footer-copy { font-size: 0.7rem; color: #555; letter-spacing: 1px; }
+
+@media (max-width: 1024px) { .portfolio-grid { grid-template-columns: repeat(2, 1fr); } .portfolio-item.featured-project { grid-column: span 2; } }
+@media (max-width: 768px) {
+  .container { padding: 0 24px; } .nav { padding: 0 24px; }
+  .nav-links { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: rgba(10,10,10,0.98); backdrop-filter: blur(20px); flex-direction: column; justify-content: center; align-items: center; gap: 28px; transition: right 0.4s; }
+  .nav-links.open { right: 0; } .nav-links a { font-size: 0.9rem; } .nav-toggle { display: flex; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); } .service-card { padding: 32px 16px; }
+  .portfolio-grid { grid-template-columns: 1fr 1fr; } .portfolio-item.featured-project { grid-column: span 2; }
+  .clients-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .services-grid { grid-template-columns: 1fr; }
+  .portfolio-grid { grid-template-columns: 1fr; } .portfolio-item.featured-project { grid-column: span 1; }
+  .clients-grid { grid-template-columns: 1fr 1fr; }
+  .about-stats { grid-template-columns: 1fr; }
+  .hero-title { letter-spacing: 2px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">DREAM<span>CATCHER</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeMenu()">About</a></li>
+    <li><a href="#ceo" onclick="closeMenu()">CEO</a></li>
+    <li><a href="#services" onclick="closeMenu()">Services</a></li>
+    <li><a href="#portfolio" onclick="closeMenu()">Portfolio</a></li>
+    <li><a href="#clients" onclick="closeMenu()">Clients</a></li>
+    <li><a href="#history" onclick="closeMenu()">History</a></li>
+    <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-scanline"></div>
+  <div class="hero-content">
+    <p class="hero-pre">Creative Production &amp; AI Studio</p>
+    <h1 class="hero-title">DREAM<em>CATCHER</em><br>AGENCY</h1>
+    <p class="hero-slogan">Make Something Out of Nothing</p>
+    <div class="hero-divider"></div>
+    <div class="hero-scroll"><a href="#about"><span>Scroll</span><div class="scroll-line"></div></a></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="section-label">About Us</p>
+        <h2 class="section-title">세상에 없는 것을<br>만들어 갑니다</h2>
+        <div class="section-divider"></div>
+        <p><strong>드림캐쳐에이젼시</strong>는 2017년 설립 이래, '세상에 없는 것만 좋아하는 망상가들'이 모여 만든 종합 크리에이티브 프로덕션입니다.</p>
+        <p>경기도 파주에 위치한 <strong>약 1,000평 규모의 자체 제작장</strong>을 보유하고 있으며, 목재 CNC와 철재 플라즈마 커팅 장비를 갖추어 디자인부터 제작, 시공까지 원스톱으로 수행합니다.</p>
+        <p>무대 세트 제작, 공간 인테리어, 전시 디자인, 영상 드론 촬영, 공연 기획까지 각 분야의 전문 인력이 하나의 팀으로 움직이며 상상을 현실로 바꿉니다. HDEX Strong Beach, 양양 스마트관광도시, 인천국제공항 T1 아트월, MBC 무대 세트 등 대형 프로젝트를 성공적으로 수행해왔습니다.</p>
+        <p>현재는 <strong>생성형 AI를 활용한 크리에이티브 영역</strong>으로 사업을 확장하고 있습니다. 기존의 물리적 제작 역량에 AI 기반 광고영상, 콘텐츠 제작, 영화 제작을 융합하는 <strong>차세대 크리에이티브 스튜디오</strong>로 진화하고 있습니다.</p>
+        <div class="about-ai-badge"><div class="pulse-dot"></div>AI Creative Studio — Expanding Now</div>
+      </div>
+      <div class="reveal" style="animation-delay: 0.2s;">
+        <div class="about-stats">
+          <div class="stat-item"><div class="stat-number">2017</div><div class="stat-label">설립년도</div></div>
+          <div class="stat-item"><div class="stat-number">1,000<span style="font-size:1.2rem;">평</span></div><div class="stat-label">자체 제작장</div></div>
+          <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">주요 파트너사</div></div>
+          <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">사업 영역</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ceo">
+  <div class="container">
+    <div class="ceo-content reveal">
+      <p class="section-label">CEO Message</p>
+      <h2 class="section-title">대표 인사말</h2>
+      <div class="section-divider"></div>
+      <p class="ceo-message">
+        저는 스스로를 '사업가'가 아닌 <em>창작가</em>라고 소개합니다.<br><br>
+        아무것도 없는 빈 공간에 서서, 아직 존재하지 않는 것을 상상하고, 그것을 손으로 만들어내는 일 — 그것이 드림캐쳐가 해온 일의 전부입니다.<br><br>
+        무대 위의 한 장면, 공간을 채우는 하나의 구조물, 해변 위에 세워진 쉼터 하나까지. 우리는 늘 <em>'없는 것을 만드는 사람들'</em>이었습니다.<br><br>
+        1,000평의 제작장은 우리의 상상이 현실이 되는 곳입니다. 나무를 깎고, 철을 자르고, 도면 위의 선 하나가 실제 공간이 되는 그 과정 자체가 드림캐쳐의 정체성입니다.<br><br>
+        이제 우리는 AI라는 새로운 도구를 손에 쥐었습니다. 물리적 공간뿐 아니라, 스크린 위에서도 <em>'없는 것을 만드는 일'</em>을 계속해 나가겠습니다. 감사합니다.
+      </p>
+      <div class="ceo-sign">
+        <div class="ceo-sign-line"></div>
+        <div><div class="ceo-name">KIM SANG WOO</div><div class="ceo-role">대표이사 · 김상우</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <div class="reveal"><p class="section-label">What We Do</p><h2 class="section-title">사업 영역</h2></div>
+    <div class="services-grid reveal">
+      <div class="service-card"><span class="service-icon">🎬</span><div class="service-name-en">Movie · Film</div><div class="service-name-kr">영상 · 영화 제작</div><div class="service-detail">촬영, 편집, 드론 촬영<br>독립 단편영화 제작</div></div>
+      <div class="service-card"><span class="service-icon">🏗️</span><div class="service-name-en">Stage · Interior</div><div class="service-name-kr">무대 · 인테리어</div><div class="service-detail">무대 세트, 공간 인테리어<br>구조물 설계 및 시공</div></div>
+      <div class="service-card"><span class="service-icon">💡</span><div class="service-name-en">Creative</div><div class="service-name-kr">크리에이티브 기획</div><div class="service-detail">공간 기획, 페스티벌 기획<br>브랜드 공간 연출</div></div>
+      <div class="service-card"><span class="service-icon">✏️</span><div class="service-name-en">Design</div><div class="service-name-kr">디자인</div><div class="service-detail">공간 디자인, 사인물 디자인<br>조형물, 가구 디자인</div></div>
+      <div class="service-card"><span class="service-icon">🎭</span><div class="service-name-en">Performance</div><div class="service-name-kr">공연 · 이벤트</div><div class="service-detail">콘서트, 페스티벌<br>이벤트 제작</div></div>
+      <div class="service-card featured"><span class="service-icon">🤖</span><div class="service-name-en">AI Creative</div><div class="service-name-kr">AI 크리에이티브</div><div class="service-detail">생성형 AI 광고영상 제작<br>AI 콘텐츠 · 영화 제작</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="container" style="max-width:100%; padding:0 40px;">
+    <div class="reveal" style="max-width:1200px; margin:0 auto 48px;">
+      <p class="section-label">Our Work</p><h2 class="section-title">주요 프로젝트</h2>
+    </div>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="portfolio-item featured-project"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #2a1f0a 0%, #1a2a2a 50%, #0d1b2a 100%);"></div><div class="portfolio-item-overlay"><div class="portfolio-badge">Featured</div><span class="portfolio-category">Design · Construction</span><span class="portfolio-name">HDEX Strong Beach @서피비치</span><span class="portfolio-desc">비치 피트니스 공간 풀 디자인·설계·시공 — 게이트, 웰컴센터 백월, 운동기구 조형물, 사인물 제작. 인스타그램 바이럴 화제 프로젝트</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #0a2a1a, #1a2a2a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Smart Tourism · 4 Beaches</span><span class="portfolio-name">양양군 스마트관광도시 조성</span><span class="portfolio-desc">남애3리·기사문·죽도·서피비치 4개 해변 — 동남아형 야자수 파라솔 28세트, 조형물 디자인·설계·시공·유지관리</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a2a0a, #0a1a2a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Public Space</span><span class="portfolio-name">양양 남대천 스마트하천 조성</span><span class="portfolio-desc">방부목 그늘막 파고라 6동, 디자인 벤치 16개, 야자수 파라솔, LED 스트링라이트 포토스팟</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #2a1a0a, #1a1a2a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Design · Construction</span><span class="portfolio-name">인천국제공항 T1 아트월</span><span class="portfolio-desc">디자인 제작 시공</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a0a2a, #2a1a0a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Festival</span><span class="portfolio-name">2024 양양서핑페스티벌</span><span class="portfolio-desc">서핑 페스티벌 기획 및 무대·구조물 제작</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #2a2a0a, #1a0a1a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Stage</span><span class="portfolio-name">MBC DMZ POP 콘서트</span><span class="portfolio-desc">무대 세트 디자인 및 제작</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #0a2a1a, #1a2a2a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Interior</span><span class="portfolio-name">LG 인화원 사내 방송실</span><span class="portfolio-desc">방송실 설계 및 시공</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a1a2a, #2a1a1a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Exhibition</span><span class="portfolio-name">에디슨모터스 EVZ 전시</span><span class="portfolio-desc">전시 부스 디자인 및 시공</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #0a1a2a, #1a2a0a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Design · Construction</span><span class="portfolio-name">더 앤 리조트 야외풀·공연장</span><span class="portfolio-desc">야외 시설 디자인 및 시공</span></div></div>
+    <div class="portfolio-item featured-project"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #2a1a2a 100%);"></div><div class="portfolio-item-overlay"><div class="portfolio-badge">Expanding</div><span class="portfolio-category">AI Creative</span><span class="portfolio-name">AI 크리에이티브 프로덕션</span><span class="portfolio-desc">영상·드론 촬영 베이스 + 생성형 AI 활용 광고영상 제작, 공모전 수상, AI 영화 제작 — 물리적 제작 역량에 AI를 융합한 차세대 크리에이티브 스튜디오로 확장 중</span></div></div>
+    <div class="portfolio-item"><div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a2a1a, #0a0a2a);"></div><div class="portfolio-item-overlay"><span class="portfolio-category">Film</span><span class="portfolio-name">독립 단편영화</span><span class="portfolio-desc">나의 시월 / 위대한 봉작가 — 제작, 촬영, 편집</span></div></div>
+  </div>
+</section>
+
+<section id="clients">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Trusted By</p><h2 class="section-title">주요 클라이언트 · 파트너</h2></div>
+    <div class="clients-grid reveal">
+      <div class="client-item"><span class="client-name">MBC</span></div>
+      <div class="client-item"><span class="client-name">인천국제공항</span></div>
+      <div class="client-item"><span class="client-name">LG 인화원</span></div>
+      <div class="client-item"><span class="client-name">양양군</span></div>
+      <div class="client-item"><span class="client-name">HDEX</span></div>
+      <div class="client-item"><span class="client-name">OB맥주</span></div>
+      <div class="client-item"><span class="client-name">에디슨모터스</span></div>
+      <div class="client-item"><span class="client-name">라온서피리조트</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="history">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Milestones</p><h2 class="section-title">회사 연혁</h2></div>
+    <div class="timeline reveal">
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-date">2024</div><div class="timeline-event">양양서핑페스티벌 기획 및 제작<br>AI 크리에이티브 사업 영역 확장 — 생성형 AI 광고영상, 공모전 수상, AI 영화 제작</div></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-date">2023</div><div class="timeline-event">HDEX Strong Beach @서피비치 디자인·설계·시공<br>양양군 스마트관광도시 파라솔 설치 및 유지관리</div></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-date">2022</div><div class="timeline-event">양양 남대천 스마트하천 조성사업 — 그늘막·파고라 디자인 시공<br>양양군 스마트관광도시 조성사업 참여 (4개 해변 야자수 파라솔 28세트·조형물)</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2021. 03</div><div class="timeline-event">LG 인화원 협력사 등록</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2020. 09</div><div class="timeline-event">인천국제공항 협력사 등록</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2019. 02</div><div class="timeline-event">라온서피리조트 협력사 등록</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2018. 12</div><div class="timeline-event">OB맥주 협력사 등록</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2018. 02</div><div class="timeline-event">MBC 협력사 등록</div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2017. 12</div><div class="timeline-event">드림캐쳐에이젼시 설립</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Get In Touch</p><h2 class="section-title">오시는 길 · 연락처</h2></div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <ul class="contact-info-list">
+          <li class="contact-info-item"><div class="contact-icon">📍</div><div><div class="contact-label">Address</div><div class="contact-value">경기도 파주시 파주읍 광탄천로 319</div></div></li>
+          <li class="contact-info-item"><div class="contact-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:dc@dcagency.co.kr">dc@dcagency.co.kr</a></div></div></li>
+          <li class="contact-info-item"><div class="contact-icon">🌐</div><div><div class="contact-label">Website</div><div class="contact-value"><a href="https://www.dcagency.co.kr" target="_blank">www.dcagency.co.kr</a></div></div></li>
+        </ul>
+      </div>
+      <div class="map-container reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3156.5!2d126.78!3d37.82!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z6rK96riw64-EIO2MjOyjvOyLnCDtjIzso7zsnY0g6rSR7YOE7LKc66GcIDMxOQ!5e0!3m2!1sko!2skr!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">DREAM<span>CATCHER</span> AGENCY</div>
+      <div class="footer-copy">© 2017-2026 DreamCatcher Agency. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){var c=document.getElementById('particles');for(var i=0;i<30;i++){var p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';p.style.width=p.style.height=(1+Math.random()*2)+'px';c.appendChild(p)}})();
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60)});
+function toggleMenu(){document.getElementById('navLinks').classList.toggle('open');document.getElementById('navToggle').classList.toggle('active')}
+function closeMenu(){document.getElementById('navLinks').classList.remove('open');document.getElementById('navToggle').classList.remove('active')}
+var obs=new IntersectionObserver(function(e){e.forEach(function(el){if(el.isIntersecting)el.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el)});
+document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+</body>
+</html>
